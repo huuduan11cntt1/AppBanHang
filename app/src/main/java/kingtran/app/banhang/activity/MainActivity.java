@@ -1,4 +1,4 @@
-package kingtran.app.banhang;
+package kingtran.app.banhang.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -21,6 +21,10 @@ import com.google.android.material.navigation.NavigationView;
 import java.util.ArrayList;
 import java.util.List;
 
+import kingtran.app.banhang.R;
+import kingtran.app.banhang.adapter.LoaispAdapter;
+import kingtran.app.banhang.model.LoaiSp;
+
 public class MainActivity extends AppCompatActivity {
 
     Toolbar toolbar;
@@ -29,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     NavigationView navigationView_MHC;
     ListView listView_MHC;
     private DrawerLayout drawerLayout;
+    LoaispAdapter loaispAdapter;
+    List<LoaiSp> mangloaisp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,5 +84,11 @@ public class MainActivity extends AppCompatActivity {
         navigationView_MHC= findViewById(R.id.navigationView);
         listView_MHC= findViewById(R.id.listView_manhinchinh);
         drawerLayout= findViewById(R.id.drawerLayout);
+        //khoi tao list
+        mangloaisp = new ArrayList<>();
+
+        //khoi tao adapter
+        loaispAdapter = new LoaispAdapter(getApplicationContext(),mangloaisp);
+        listView_MHC.setAdapter(loaispAdapter);
     }
 }
