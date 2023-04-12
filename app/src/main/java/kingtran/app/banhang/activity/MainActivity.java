@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import kingtran.app.banhang.R;
 import kingtran.app.banhang.adapter.LoaispAdapter;
 import kingtran.app.banhang.model.LoaiSp;
@@ -65,8 +66,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getLoaiSanPham() {
-        compositeDisposable.add(apiBanHang.getLoaiSp().su
-        )
+      // compositeDisposable.add(apiBanHang.getLoaiSp();
+
     }
 
     private void ActionViewFlipper() {
