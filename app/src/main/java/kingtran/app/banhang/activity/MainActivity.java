@@ -6,6 +6,9 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -13,6 +16,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.bumptech.glide.Glide;
@@ -21,9 +25,13 @@ import com.google.android.material.navigation.NavigationView;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import kingtran.app.banhang.R;
 import kingtran.app.banhang.adapter.LoaispAdapter;
 import kingtran.app.banhang.model.LoaiSp;
+import kingtran.app.banhang.retrofit.ApiBanHang;
+import kingtran.app.banhang.retrofit.RetrofiClient;
+import kingtran.app.banhang.utils.Utils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,14 +43,30 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     LoaispAdapter loaispAdapter;
     List<LoaiSp> mangloaisp;
+    CompositeDisposable compositeDisposable = new CompositeDisposable();
+    ApiBanHang apiBanHang;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+       apiBanHang = RetrofiClient.getInstance(Utils.BASE_URL).create(ApiBanHang.class);
+
         AnhXa();
         ActionBar();
         ActionViewFlipper();
+        if (isConnected(this)){
+            Toast.makeText(getApplicationContext(),"OK", Toast.LENGTH_SHORT).show();
+            ActionViewFlipper();
+            getLoaiSanPham();
+        }else{
+        Toast.makeText(getApplicationContext(),"Khong co Internet", Toast.LENGTH_SHORT).show();
+     }
+    }
+
+    private void getLoaiSanPham() {
+        compositeDisposable.add(apiBanHang.getLoaiSp().su
+        )
     }
 
     private void ActionViewFlipper() {
@@ -90,5 +114,17 @@ public class MainActivity extends AppCompatActivity {
         //khoi tao adapter
         loaispAdapter = new LoaispAdapter(getApplicationContext(),mangloaisp);
         listView_MHC.setAdapter(loaispAdapter);
+    }
+
+    private boolean isConnected(Context context){
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        NetworkInfo mobile = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        if ((wifi != null && wifi.isConnected()) || (mobile != null && mobile.isConnected()) ){
+            return true;
+        }
+        else {
+            return  false;
+        }
     }
 }
